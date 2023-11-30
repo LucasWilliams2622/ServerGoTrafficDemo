@@ -1,21 +1,16 @@
-let createError = require("http-errors");
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-const mysql = require("mysql2/promise");
-var indexRouter = require("./routes/index");
-let usersRouter = require("./routes/users");
-const config = require("./config.json");
-const session = require("express-session");
-const { Sequelize, DataTypes } = require("sequelize");
-const swaggerUi = require("swagger-ui-express");
-const swaggerJSDoc = require("swagger-jsdoc");
-const cors = require("cors");
-const payOS = require("./utils/payos");
-const dotenv = require("dotenv");
-const bodyParser = require('body-parser');
+let createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
+const mysql = require('mysql2/promise');
+var indexRouter = require('./routes/index');
+let usersRouter = require('./routes/users');
+const config = require('./config.json');
+const session = require('express-session');
+const Sequelize = require('sequelize');
 
+<<<<<<< HEAD
 
 
 dotenv.config();
@@ -40,6 +35,8 @@ const bodyParser = require('body-parser');
 
 
 dotenv.config();
+=======
+>>>>>>> parent of 267efd9 (a)
 initialize();
 
 async function initialize() {
@@ -51,13 +48,14 @@ async function initialize() {
   // connect to db
   const sequelize = new Sequelize(database, user, password, {
     host: host,
+<<<<<<< HEAD
     dialect: dialect,
     dialect: dialect,
+=======
+    dialect: dialect
+>>>>>>> parent of 267efd9 (a)
   });
-
-  // init models and add them to the exported db object
-
-  await sequelize.sync({ alter: true });
+  module.exports = db = {};
 
   // init models and add them to the exported db object
 
@@ -65,32 +63,15 @@ async function initialize() {
 
   try {
     await sequelize.authenticate();
-    console.log("===> Connection has been established successfully.");
+    console.log('===> Connection has been established successfully.');
   } catch (error) {
-    console.error("Unable to connect to the database:", error);
+    console.error('Unable to connect to the database:', error);
   }
 }
 
-const options = {
-  definition: {
-    openapi: "3.0.0",
-    info: {
-      title: "GoTraffic API",
-      version: "1.0.0",
-      description: "This is Go Traffic API documentation.",
-    },
-    servers: [
-      {
-        url: "http://103.57.220.131:3000",
-      },
-    ],
-  },
-  apis: ["./routes/api/*.js"],
-};
-
-const specs = swaggerJSDoc(options);
 
 // API
+<<<<<<< HEAD
 let UserAPIRouter = require("./routes/api/UserAPI");
 let CarBrandAPIRouter = require("./routes/api/CarBrandAPI");
 let CarAPIRouter = require("./routes/api/CarAPI");
@@ -119,14 +100,17 @@ let RevenueAPIRouter = require("./routes/api/RevenueAPI");
 
 const db = require("./components/indexModel");
 const { log } = require("console");
+=======
+let UserAPIRouter = require('./routes/api/UserAPI')
+>>>>>>> parent of 267efd9 (a)
 
 // CPANEL
 
+
 var app = express();
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
-app.use(cors());
 
 // view engine setup
+<<<<<<< HEAD
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "views"));
@@ -173,68 +157,33 @@ app.use("/", indexRouter);
 // http://localhost:3000/user/api
 app.use("/user/api", UserAPIRouter);
 app.use("/user/api", UserAPIRouter);
+=======
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
 
-// http://localhost:3000/car-brand/api
-app.use("/car-brand/api", CarBrandAPIRouter);
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// http://localhost:3000/car/api
-app.use("/car/api", CarAPIRouter);
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
 
-// http://localhost:3000/car/api
-app.use("/booking/api", BookingAPIRouter);
 
-// http://localhost:3000/favorite-car/api
-app.use("/favorite-car/api", FavoriteCarAPIRouter);
+app.use(session({
+  secret: 'iloveyou',
+  resave: true,
+  saveUninitialized: true,
+  cookie: { secure: false }
+}));
 
-// http://localhost:3000/review/api
-app.use("/review/api", ReviewAPIRouter);
+app.use('/', indexRouter);
+// API 
+// http://localhost:3000/user/api
+app.use('/user/api', UserAPIRouter);
+>>>>>>> parent of 267efd9 (a)
 
-// http://localhost:3000/notification/api
-app.use("/notification/api", NotificationAPIRouter);
-
-// http://localhost:3000/notification-booking/api
-app.use("/notification-booking/api", NotificationBookingAPIRouter);
-
-// http://localhost:3000/address/api
-app.use("/address/api", AddressAPIRouter);
-
-// http://localhost:3000/address/api
-app.use("/payment/api", PaymentAPIRouter);
-
-// http://localhost:3000/address/api
-app.use("/revenue/api", RevenueAPIRouter);
-
-app.post("/create-payment-link", async (req, res) => {
-  const YOUR_DOMAIN = "http://103.57.220.131:3000";
-  const amount = parseInt(req.body.amount) || 1000;
-  const idUser = req.query.idUser;
-
-  console.log(typeof amount);
-  const body = {
-    orderCode: Number(String(Date.now()).slice(-6)),
-    amount: amount,
-    description: "Nap tien vao tai khoan",
-    returnUrl: `${YOUR_DOMAIN}/success.html`,
-    cancelUrl: `${YOUR_DOMAIN}/cancel.html`,
-  };
-
-  try {
-    const paymentLinkResponse = await payOS.createPaymentLink(body);
-    res.redirect(paymentLinkResponse.checkoutUrl);
-
-  } catch (error) {
-    console.error(error);
-    res.send("Something went error");
-  }
-});
-
-app.post('/create', (req, res) => {
-  const amount = req.body.amount;
-  console.log('Số lượng:', amount);
-
-  
-  res.send('Dữ liệu đã được nhận thành công!');
-});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -243,6 +192,7 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
+<<<<<<< HEAD
   // set locals, only providing er~ror in development
   // set locals, only providing er~ror in development
   res.locals.message = err.message;
@@ -253,6 +203,15 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
   res.render("error");
+=======
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+>>>>>>> parent of 267efd9 (a)
 });
 
 module.exports = app;

@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "database": {
     "host": "103.57.220.131",
     "port": 3000,
@@ -8,3 +9,14 @@
     "dialect": "mysql"
   }
 }
+=======
+    "database": {
+      "host": "103.57.129.166",
+      "port": 3306,
+      "user": "root",
+      "password": "gotraffic&9299",
+      "database": "gotrafficdb" ,
+      "dialect":"mysql"
+    }
+  } 
+>>>>>>> parent of 267efd9 (a)
